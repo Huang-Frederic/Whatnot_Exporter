@@ -4,136 +4,105 @@ import pandas as pd
 DATE_DE_VENTE = "2025-05-18"
 PLATEFORME = "Whatnot"
 
-def format_whatnot_csv(input_csv_path, output_csv_path):
-    """
-    Transforme un export brut Whatnot vers un format compatible avec ton Google Sheet de ventes.
-    """
+# 🎁 Configurations des cas spécifiques
+GIVE_DU_PROF = {
+    "Produit": "Carte - RR",
+    "Quantité": 1,
+    "Prix": "0,30",
+    "Remarques": "Give du prof"
+}
 
-    # Lecture du fichier CSV brut
+GIVE_ACHETEUR_DU_PROF = {
+    "Produit": "Carte - AR",
+    "Quantité": 1,
+    "Prix": "2,315",
+    "Remarques": "Give acheteur du prof"
+}
+
+def create_row(row, produit="", quantite="", prix_p="", prix_vendu="", frais_even="",
+               remarques=""):
+    return {
+        "Date de vente": DATE_DE_VENTE,
+        "Plateforme": PLATEFORME,
+        "Acheteur": row["buyer"],
+        "Label": row["product name"],
+        "Produit": produit,
+        "QuantitéP": quantite,
+        "PrixP": prix_p,
+        "Bonus": "",
+        "QuantitéB": "",
+        "PrixB": "",
+        "Langue": "JP",
+        "Coût total (€)": "",
+        "Prix vendu (€)": prix_vendu,
+        "Frais Whatnot": "",
+        "Frais éventuels (€)": frais_even,
+        "Montant Perçu (€)": "",
+        "URSSAF (€)": "",
+        "Bénéfice (€)": "",
+        "Liens / Factures": row["shipment manifest"],
+        "Remarques": remarques
+    }
+
+def format_whatnot_csv(input_csv_path, output_csv_path):
     df = pd.read_csv(input_csv_path)
 
-    # Étape 1 : supprimer les lignes annulées
     if 'cancelled or failed' in df.columns:
         df = df[df['cancelled or failed'].isnull()]
 
-    # Étape 2 : conserver uniquement les colonnes utiles
     needed_columns = ['buyer', 'product name', 'sold price', 'shipment manifest']
     df = df[needed_columns]
 
-    # Étape 3 : transformation personnalisée
     def transform_row(row):
         label = str(row["product name"]).lower()
         sold_price = str(row["sold price"]).replace("€", "").replace(",", ".")
         sold_price = "{:.2f}".format(float(sold_price)).replace(".", ",")
-        lien = row["shipment manifest"]
 
         if "give du prof" in label:
-            return {
-                "Date de vente": DATE_DE_VENTE,
-                "Plateforme": PLATEFORME,
-                "Acheteur": row["buyer"],
-                "Label": row["product name"],
-                "Produit": "Carte - RR",
-                "QuantitéP": 1,
-                "PrixP": "0,30",
-                "Bonus": "",
-                "QuantitéB": "",
-                "PrixB": "",
-                "Langue": "JP",
-                "Coût total (€)": "",
-                "Prix vendu (€)": "",
-                "Frais Whatnot": "",
-                "Frais éventuels (€)": sold_price,
-                "Montant Perçu (€)": "",
-                "URSSAF (€)": "",
-                "Bénéfice (€)": "",
-                "Liens / Factures": lien,
-                "Remarques": "Give du prof"
-            }
+            return create_row(
+                row,
+                produit=GIVE_DU_PROF["Produit"],
+                quantite=GIVE_DU_PROF["Quantité"],
+                prix_p=GIVE_DU_PROF["Prix"],
+                prix_vendu="",
+                frais_even=sold_price,
+                remarques=GIVE_DU_PROF["Remarques"]
+            )
 
         elif "give acheteur du prof" in label:
-            return {
-                "Date de vente": DATE_DE_VENTE,
-                "Plateforme": PLATEFORME,
-                "Acheteur": row["buyer"],
-                "Label": row["product name"],
-                "Produit": "Carte - AR",
-                "QuantitéP": 1,
-                "PrixP": "2,315",
-                "Bonus": "",
-                "QuantitéB": "",
-                "PrixB": "",
-                "Langue": "JP",
-                "Coût total (€)": "",
-                "Prix vendu (€)": "",
-                "Frais Whatnot": "",
-                "Frais éventuels (€)": sold_price,
-                "Montant Perçu (€)": "",
-                "URSSAF (€)": "",
-                "Bénéfice (€)": "",
-                "Liens / Factures": lien,
-                "Remarques": "Give acheteur du prof"
-            }
+            return create_row(
+                row,
+                produit=GIVE_ACHETEUR_DU_PROF["Produit"],
+                quantite=GIVE_ACHETEUR_DU_PROF["Quantité"],
+                prix_p=GIVE_ACHETEUR_DU_PROF["Prix"],
+                prix_vendu="",
+                frais_even=sold_price,
+                remarques=GIVE_ACHETEUR_DU_PROF["Remarques"]
+            )
 
         elif "lot" in label:
-            # Cas générique d'un lot ou give quelconque
-            return {
-                "Date de vente": DATE_DE_VENTE,
-                "Plateforme": PLATEFORME,
-                "Acheteur": row["buyer"],
-                "Label": row["product name"],
-                "Produit": "",
-                "QuantitéP": "",
-                "PrixP": "",
-                "Bonus": "",
-                "QuantitéB": "",
-                "PrixB": "",
-                "Langue": "JP",
-                "Coût total (€)": "",
-                "Prix vendu (€)": sold_price,
-                "Frais Whatnot": "",
-                "Frais éventuels (€)": "",
-                "Montant Perçu (€)": "",
-                "URSSAF (€)": "",
-                "Bénéfice (€)": "",
-                "Liens / Factures": lien,
-                "Remarques": "Give/Lot générique"
-            }
+            return create_row(
+                row,
+                prix_vendu=sold_price,
+                remarques="Give/Lot générique"
+            )
 
         else:
-            # Cas classique : vente d'une carte AR
-            return {
-                "Date de vente": DATE_DE_VENTE,
-                "Plateforme": PLATEFORME,
-                "Acheteur": row["buyer"],
-                "Label": row["product name"],
-                "Produit": "Carte - AR",
-                "QuantitéP": 1,
-                "PrixP": "2,315",
-                "Bonus": "",
-                "QuantitéB": "",
-                "PrixB": "",
-                "Langue": "JP",
-                "Coût total (€)": "",
-                "Prix vendu (€)": sold_price,
-                "Frais Whatnot": "",
-                "Frais éventuels (€)": "",
-                "Montant Perçu (€)": "",
-                "URSSAF (€)": "",
-                "Bénéfice (€)": "",
-                "Liens / Factures": lien,
-                "Remarques": ""
-            }
+            return create_row(
+                row,
+                produit="Carte - AR",
+                quantite=1,
+                prix_p="2,315",
+                prix_vendu=sold_price
+            )
 
-    # Appliquer la transformation à toutes les lignes
     df_formatted = pd.DataFrame([transform_row(row) for _, row in df.iterrows()])
 
-    # Exporter au format CSV compatible Google Sheet
+    # Trier : les produits définis d'abord, puis ceux à compléter à la main
+    df_formatted.sort_values(by="Produit", key=lambda col: col.isna() | (col == ""), inplace=True)
+
     df_formatted.to_csv(output_csv_path, index=False, encoding="utf-8-sig")
     print(f"✅ Fichier formaté exporté : {output_csv_path}")
-
-# Exemple d’utilisation :
-# format_whatnot_csv("export_whatnot.csv", "export_google_sheet.csv")
 
 
 if __name__ == "__main__":
