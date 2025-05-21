@@ -1,4 +1,8 @@
 import pandas as pd
+from tcgdexsdk import TCGdex
+
+# Initialisation du SDK
+sdk = TCGdex()
 
 # Dictionnaires de mappage
 locale_map = {
@@ -24,12 +28,12 @@ rarity_map = {
 
 # Prix de base par rareté (modifiable selon tes besoins)
 base_price_by_rarity = {
-    "SAR": 5.0,
-    "SR": 3.0,
-    "AR": 3.0,
-    "RRR": 1.0,
-    "RR": 1.0,
-    "Shiny": 1.0,
+    "SAR": 10.0,
+    "SR": 8.0,
+    "AR": 5.0,
+    "RRR": 3.0,
+    "RR": 2.0,
+    "Shiny": 4.0,
     "Other": 1.0,
     "ERROR": 0.5
 }
@@ -50,6 +54,24 @@ def detect_locale(id_str):
     return locale_map["default"]
 
 
+def get_card_image_direct(card_id, lang):
+    lang = "ja" if lang == "JP" else lang
+    lang = "zh-cn" if lang == "CN" else lang
+    lang = "fr" if lang == "FR" else lang
+    lang = "en" if lang == "EN" else lang
+    try:
+        print(
+            f"[DEBUG] Langue SDK: {lang.lower()} | Card ID utilisé: {card_id}")
+        sdk_lang = TCGdex(lang.lower())
+        card = sdk_lang.card.getSync(card_id)
+        print(f"[DEBUG] Requête réussie. Image URL: {card.image}")
+        return card.getImage("high", "webp")
+    except Exception as e:
+        print(
+            f"Erreur lors de la récupération de l'image de la carte {card_id} ({lang}) : {e}")
+        return ""
+
+
 def format_whatnot_csv(input_path, output_path):
     df = pd.read_csv(input_path, encoding="utf-16", sep=";")
 
@@ -64,6 +86,8 @@ def format_whatnot_csv(input_path, output_path):
 
     df["Description"] = df["Rareté"] + " - " + df["Set"] + " - " + df["Series"]
     df["Prix"] = df["Rareté"].map(base_price_by_rarity)
+    df["Image URL 1"] = df.apply(lambda row: get_card_image_direct(
+        row["Id"].split("_")[1].lower(), row["Langue"]), axis=1)
 
     output_df = pd.DataFrame({
         "Catégorie": "Trading Card Games",
@@ -78,7 +102,7 @@ def format_whatnot_csv(input_path, output_path):
         "État": "Near Mint",
         "Coût par article": "",
         "SKU": "",
-        "Image URL 1": "",
+        "Image URL 1": df["Image URL 1"],
         "Image URL 2": "",
         "Image URL 3": "",
         "Image URL 4": "",
