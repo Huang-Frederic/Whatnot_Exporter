@@ -1,8 +1,5 @@
 import pandas as pd
-from tcgdexsdk import TCGdex
 
-# Initialisation du SDK
-sdk = TCGdex()
 
 # Dictionnaires de mappage
 locale_map = {
@@ -54,22 +51,21 @@ def detect_locale(id_str):
     return locale_map["default"]
 
 
-def get_card_image_direct(card_id, lang):
-    lang = "ja" if lang == "JP" else lang
-    lang = "zh-cn" if lang == "CN" else lang
-    lang = "fr" if lang == "FR" else lang
-    lang = "en" if lang == "EN" else lang
+def get_card_image_direct(card_id):
+    """
+    Construit directement l'URL de l'image à partir de l'ID de carte DexTCG.
+    Exemple : jpn_s6a-77 → https://static.dextcg.com/cards/jpn_s6a/77.png
+    """
     try:
-        print(
-            f"[DEBUG] Langue SDK: {lang.lower()} | Card ID utilisé: {card_id}")
-        sdk_lang = TCGdex(lang.lower())
-        card = sdk_lang.card.getSync(card_id)
-        print(f"[DEBUG] Requête réussie. Image URL: {card.image}")
-        return card.getImage("high", "webp")
+        parts = card_id.split("-")
+        if len(parts) != 2:
+            raise ValueError("Format d'ID inattendu.")
+        path = parts[0] + "/" + parts[1] + ".png"
+        return f"https://static.dextcg.com/cards/{path}"
     except Exception as e:
-        print(
-            f"Erreur lors de la récupération de l'image de la carte {card_id} ({lang}) : {e}")
+        print(f"❌ Erreur format image pour l'ID {card_id} : {e}")
         return ""
+
 
 
 def format_whatnot_csv(input_path, output_path):
@@ -86,8 +82,7 @@ def format_whatnot_csv(input_path, output_path):
 
     df["Description"] = df["Rareté"] + " - " + df["Set"] + " - " + df["Series"]
     df["Prix"] = df["Rareté"].map(base_price_by_rarity)
-    df["Image URL 1"] = df.apply(lambda row: get_card_image_direct(
-        row["Id"].split("_")[1].lower(), row["Langue"]), axis=1)
+    df["Image URL 1"] = df["Id"].apply(lambda id_str: get_card_image_direct(id_str))
 
     output_df = pd.DataFrame({
         "Catégorie": "Trading Card Games",
