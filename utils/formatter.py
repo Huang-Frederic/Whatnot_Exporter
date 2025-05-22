@@ -1,29 +1,52 @@
 import pandas as pd
-from .mappings import detect_locale, format_id, rarity_map, base_price_by_rarity
-from .image_utils import get_card_image_direct, process_card_image
+from tqdm import tqdm
+from .image_utils import get_card_image_url, generate_card_img
+import os
 
-def format_whatnot_csv(input_path, output_path, background_path):
-    df = pd.read_csv(input_path, encoding="utf-16", sep=";")
 
-    df["Langue"] = df["Id"].map(detect_locale)
+def format_id(id_str):
+    try:
+        return id_str.split("_")[-1].replace("-", " ")
+    except:
+        return id_str
+
+
+def detect_locale(id_str, locale_map):
+    if "_" in id_str:
+        prefix = id_str.split("_")[0].lower()
+        return locale_map.get(prefix, locale_map["default"])
+    return locale_map["default"]
+
+
+def annex_whatnot_format(df, locale_map, rarity_map, base_price_by_rarity):
+    df["Langue"] = df["Id"].apply(lambda id_str: detect_locale(id_str, locale_map))
     df["Formatted ID"] = df["Id"].map(format_id)
     df["Titre"] = df["Name"] + " - " + df["Formatted ID"] + " - " + df["Langue"]
 
     df["Rareté"] = df["Rarity"].map(rarity_map)
     df["Rareté"] = df["Rareté"].fillna(df["Rarity"].apply(lambda r: "ERROR" if r.strip() == "—" else r))
-
     df["Description"] = df["Rareté"] + " - " + df["Set"] + " - " + df["Series"]
     df["Prix"] = df["Rareté"].map(base_price_by_rarity)
 
-    df["Image URL 1"] = df["Id"].apply(lambda id_str: 
-        process_card_image(
-            id_str, 
-            get_card_image_direct(id_str),
-            background_path
-        )
-    )
+    return df
 
-    output_df = pd.DataFrame({
+
+def annex_images(df, github_url, background_path):
+    image_urls = []
+    for id_str in tqdm(df["Id"], desc="🖼️ Génération des images Whatnot"):
+        image_filename = f"whatnot-images/{id_str}.png"
+        if os.path.exists(image_filename):
+            image_urls.append(f"{github_url}/{id_str}.png")
+        else:
+            url = get_card_image_url(id_str)
+            final_path = generate_card_img(id_str, url, github_url, background_path)
+            image_urls.append(final_path)
+    df["Image URL 1"] = image_urls
+    return df
+
+
+def build_output_df(df):
+    return pd.DataFrame({
         "Catégorie": "Trading Card Games",
         "Sous-catégorie": "Cartes Pokémon",
         "Titre": df["Titre"],
@@ -46,5 +69,11 @@ def format_whatnot_csv(input_path, output_path, background_path):
         "Image URL 8": ""
     })
 
+
+def format_whatnot_csv(input_path, output_path, github_url, background_path, locale_map, rarity_map, base_price_by_rarity):
+    df = pd.read_csv(input_path, encoding="utf-16", sep=";")
+    df = annex_whatnot_format(df, locale_map, rarity_map, base_price_by_rarity)
+    df = annex_images(df, github_url, background_path)
+    output_df = build_output_df(df)
     output_df.to_csv(output_path, index=False, encoding="utf-8")
     print(f"✅ CSV exporté : {output_path}")
