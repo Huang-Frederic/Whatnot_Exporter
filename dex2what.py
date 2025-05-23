@@ -22,7 +22,7 @@ BASE_LISTINGS = [
         "Description": "AR",
         "Quantity": 237,
         "Prix": 3,
-        "Image URL 1": "whatnot-images/Single.png",
+        "Image URL 1": "Single.png",
         "include": True
     },
     {
@@ -30,7 +30,7 @@ BASE_LISTINGS = [
         "Description": "2AR+1EX",
         "Quantity": 76,
         "Prix": 5,
-        "Image URL 1": "whatnot-images/2AR1EX.png",
+        "Image URL 1": "2AR1EX.png",
         "include": True
     },
     {
@@ -38,7 +38,7 @@ BASE_LISTINGS = [
         "Description": "3AR+1EX",
         "Quantity": 44,
         "Prix": 8,
-        "Image URL 1": "whatnot-images/3AR1EX.png",
+        "Image URL 1": "3AR1EX.png",
         "include": True
     },
     {
@@ -46,7 +46,7 @@ BASE_LISTINGS = [
         "Description": "5AR+2EX",
         "Quantity": 13,
         "Prix": 13,
-        "Image URL 1": "whatnot-images/5AR2EX.png",
+        "Image URL 1": "5AR2EX.png",
         "include": True
     },
     {
@@ -54,7 +54,7 @@ BASE_LISTINGS = [
         "Description": "2Other",
         "Quantity": 10,
         "Prix": 1,
-        "Image URL 1": "whatnot-images/25a.png",
+        "Image URL 1": "25a.png",
         "include": True
     },
     {
@@ -62,7 +62,7 @@ BASE_LISTINGS = [
         "Description": "Lot custom défini en Live",
         "Quantity": 31,
         "Prix": 1,
-        "Image URL 1": "whatnot-images/Lots.png",
+        "Image URL 1": "Lots.png",
         "include": True
     },
     {
@@ -70,7 +70,7 @@ BASE_LISTINGS = [
         "Description": "Give_du_prof",
         "Quantity": 10,
         "Prix": 0,
-        "Image URL 1": "whatnot-images/GIVEABO.png",
+        "Image URL 1": "GIVEABO.png",
         "include": True
     },
     {
@@ -78,7 +78,7 @@ BASE_LISTINGS = [
         "Description": "Give_acheteur_du_prof",
         "Quantity": 5,
         "Prix": 0,
-        "Image URL 1": "whatnot-images/GIVEACHETEUR.png",
+        "Image URL 1": "GIVEACHETEUR.png",
         "include": True
     },
 ]
@@ -118,5 +118,5 @@ if __name__ == "__main__":
     format_whatnot_csv(
         args.input_csv, output_path,
         GITHUB_BASE_URL, BACKGROUND_PATH,
-        LOCALE_MAP, RARITY_MAP, BASE_PRICE_BY_RARITY
+        LOCALE_MAP, RARITY_MAP, BASE_PRICE_BY_RARITY, BASE_LISTINGS
     )

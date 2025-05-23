@@ -18,7 +18,7 @@ def detect_locale(id_str, locale_map):
     return locale_map["default"]
 
 
-def load_base_listings(base_listing):
+def load_base_listings(base_listing, github_url):
     base_rows = []
     for base in base_listing:
         if base.get("include", False):
@@ -35,7 +35,7 @@ def load_base_listings(base_listing):
                 "État": "Near Mint",
                 "Coût par article": "",
                 "SKU": "",
-                "Image URL 1": base["Image URL 1"],
+                "Image URL 1": f"{github_url}/base{['Image URL 1']}",
                 "Image URL 2": "",
                 "Image URL 3": "",
                 "Image URL 4": "",
@@ -103,11 +103,11 @@ def build_output_df(df):
     })
 
 
-def format_whatnot_csv(input_path, output_path, github_url, background_path, locale_map, rarity_map, base_price_by_rarity):
+def format_whatnot_csv(input_path, output_path, github_url, background_path, locale_map, rarity_map, base_price_by_rarity, base_listing):
     df = pd.read_csv(input_path, encoding="utf-16", sep=";")
     df = annex_whatnot_format(df, locale_map, rarity_map, base_price_by_rarity)
     df = annex_images(df, github_url, background_path)
-    base_df = pd.DataFrame(load_base_listings())
+    base_df = pd.DataFrame(load_base_listings(base_listing, github_url))
     output_df = build_output_df(df)
     output_df = pd.concat([base_df, output_df], ignore_index=True)
 
