@@ -31,6 +31,7 @@ def load_base_listings(base_listing, github_url):
                 "Type": "Auction" if base["Prix"] > 0 else "Giveaway",
                 "Prix": base["Prix"],
                 "Profil de livraison": "De 0 à <20\u00a0grammes",
+                "Offres Acceotées": "",
                 "Matières dangereuses": "Not Hazmat",
                 "État": "Near Mint",
                 "Coût par article": "",
@@ -88,6 +89,7 @@ def build_output_df(df):
         "Type": "Auction",
         "Prix": df["Prix"],
         "Profil de livraison": "De 0 à <20\u00a0grammes",
+        "Offres Acceotées": "",
         "Matières dangereuses": "Not Hazmat",
         "État": "Near Mint",
         "Coût par article": "",
@@ -112,4 +114,3 @@ def format_whatnot_csv(input_path, output_path, github_url, background_path, loc
     output_df = pd.concat([base_df, output_df], ignore_index=True)
 
     output_df.to_csv(output_path, index=False, encoding="utf-8")
-    print(f"✅ CSV exporté : {output_path}")

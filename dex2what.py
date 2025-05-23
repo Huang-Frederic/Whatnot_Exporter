@@ -5,13 +5,15 @@ from utils.formatter import format_whatnot_csv
 GITHUB_BASE_URL = "https://raw.githubusercontent.com/Huang-Frederic/Whatnot_Exporter/master/whatnot-images"
 BACKGROUND_PATH = "assets/background.jpg"
 
+# TODO : PRICES SHOULD BE ROUNDED, GIVEAWAY ERROR
+
 BASE_PRICE_BY_RARITY = {
-    "SAR": 10.0,
-    "SR": 8.0,
-    "AR": 5.0,
-    "RRR": 3.0,
-    "RR": 2.0,
-    "Shiny": 4.0,
+    "SAR": 5.0,
+    "SR": 3.0,
+    "AR": 3.0,
+    "RRR": 1.0,
+    "RR": 1.0,
+    "Shiny": 1.0,
     "Other": 1.0,
     "ERROR": 0.5
 }
@@ -87,14 +89,15 @@ RARITY_MAP = {
     "Common": "Other",
     "Uncommon": "Other",
     "Rare": "Other",
-    "Shiny Rare": "Shiny",
+    "Ultra Rare Shiny": "SR",
+    "Rare Shiny": "Shiny",
     "Double Rare": "RRR",
-    "Rare Ultra": "RR",
+    "Rare Ultra": "AR",
     "Rare Secret": "SR",
     "Art Rare": "AR",
     "Special Art Rare": "SAR",
-    "Hyper Rare": "Other",
-    "Character Ultra Rare": "Other",
+    "Hyper Rare": "SAR",
+    "Character Ultra Rare": "AR",
     "Promo": "Other"
 }
 
@@ -120,3 +123,4 @@ if __name__ == "__main__":
         GITHUB_BASE_URL, BACKGROUND_PATH,
         LOCALE_MAP, RARITY_MAP, BASE_PRICE_BY_RARITY, BASE_LISTINGS
     )
+    print(f"✅ CSV exporté : {output_path}")
