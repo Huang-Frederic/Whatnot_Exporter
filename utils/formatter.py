@@ -35,7 +35,7 @@ def load_base_listings(base_listing, github_url):
                 "État": "Near Mint",
                 "Coût par article": "",
                 "SKU": "",
-                "Image URL 1": f"{github_url}/base{['Image URL 1']}",
+                "Image URL 1": f"{github_url}/{base['Image URL 1']}",
                 "Image URL 2": "",
                 "Image URL 3": "",
                 "Image URL 4": "",
