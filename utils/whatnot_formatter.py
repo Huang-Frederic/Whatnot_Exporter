@@ -1,6 +1,6 @@
 import pandas as pd
 from tqdm import tqdm
-from .image_utils import get_card_image_url, generate_card_img
+from .whatnot_utils import get_card_image_url, generate_card_img
 import os
 
 

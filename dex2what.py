@@ -1,6 +1,6 @@
 import argparse
 import os
-from utils.formatter import format_whatnot_csv
+from utils.whatnot_formatter import format_whatnot_csv
 
 GITHUB_BASE_URL = "https://raw.githubusercontent.com/Huang-Frederic/Whatnot_Exporter/master/whatnot-images"
 BACKGROUND_PATH = "assets/background.jpg"
@@ -29,7 +29,7 @@ BASE_LISTINGS = [
     },
     {
         "Titre": "Lot 2 AR + 1 EX - JP",
-        "Description": "2AR+1EX",
+        "Description": "2AR1EX",
         "Quantity": 76,
         "Prix": 5,
         "Image URL 1": "2AR1EX.png",
@@ -37,7 +37,7 @@ BASE_LISTINGS = [
     },
     {
         "Titre": "Lot 3 AR + 1 EX - JP",
-        "Description": "3AR+1EX",
+        "Description": "3AR1EX",
         "Quantity": 44,
         "Prix": 8,
         "Image URL 1": "3AR1EX.png",
@@ -45,7 +45,7 @@ BASE_LISTINGS = [
     },
     {
         "Titre": "Lot 5 AR + 2 EX - JP",
-        "Description": "5AR+2EX",
+        "Description": "5AR2EX",
         "Quantity": 13,
         "Prix": 13,
         "Image URL 1": "5AR2EX.png",
@@ -66,23 +66,7 @@ BASE_LISTINGS = [
         "Prix": 1,
         "Image URL 1": "Lots.png",
         "include": True
-    },
-    {
-        "Titre": "Give du Prof",
-        "Description": "Give_du_prof",
-        "Quantity": 10,
-        "Prix": 0,
-        "Image URL 1": "GIVEABO.png",
-        "include": True
-    },
-    {
-        "Titre": "Give Acheteur du Prof",
-        "Description": "Give_acheteur_du_prof",
-        "Quantity": 5,
-        "Prix": 0,
-        "Image URL 1": "GIVEACHETEUR.png",
-        "include": True
-    },
+    }
 ]
 
 RARITY_MAP = {
