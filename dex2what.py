@@ -25,7 +25,7 @@ BASE_LISTINGS = [
         "Quantity": 237,
         "Prix": 3,
         "Image URL 1": "Single.png",
-        "include": True
+        "include": False
     },
     {
         "Titre": "Lot 2 AR + 1 EX - JP",
@@ -33,7 +33,7 @@ BASE_LISTINGS = [
         "Quantity": 76,
         "Prix": 5,
         "Image URL 1": "2AR1EX.png",
-        "include": True
+        "include": False
     },
     {
         "Titre": "Lot 3 AR + 1 EX - JP",
@@ -41,7 +41,7 @@ BASE_LISTINGS = [
         "Quantity": 44,
         "Prix": 8,
         "Image URL 1": "3AR1EX.png",
-        "include": True
+        "include": False
     },
     {
         "Titre": "Lot 5 AR + 2 EX - JP",
@@ -49,14 +49,38 @@ BASE_LISTINGS = [
         "Quantity": 13,
         "Prix": 13,
         "Image URL 1": "5AR2EX.png",
-        "include": True
+        "include": False
     },
     {
         "Titre": "Lot 25 Ans - JP",
         "Description": "2Other",
-        "Quantity": 10,
+        "Quantity": 15,
         "Prix": 1,
         "Image URL 1": "25a.png",
+        "include": True
+    },
+    {
+        "Titre": "Lot 1RRR + 1RR - JP",
+        "Description": "1RRR1R",
+        "Quantity": 50,
+        "Prix": 1,
+        "Image URL 1": "1RRR1R.png",
+        "include": True
+    },
+    {
+        "Titre": "Lot 2RR - JP",
+        "Description": "1RRR1R",
+        "Quantity": 50,
+        "Prix": 1,
+        "Image URL 1": "1RRR1R.png",
+        "include": True
+    },
+    {
+        "Titre": "RRR/RR VU EN LIVE - JP",
+        "Description": "1RR",
+        "Quantity": 20,
+        "Prix": 1,
+        "Image URL 1": "1RR.png",
         "include": True
     },
     {
@@ -74,12 +98,16 @@ RARITY_MAP = {
     "Uncommon": "Other",
     "Rare": "Other",
     "Ultra Rare Shiny": "SR",
+    "Ultra Rare": "SR",
+    "Shiny Ultra Rare": "SR",
+    "Secret Rare": "SR",
     "Rare Shiny": "Shiny",
     "Double Rare": "RRR",
     "Rare Ultra": "AR",
     "Rare Secret": "SR",
     "Art Rare": "AR",
     "Special Art Rare": "SAR",
+    "Secret Art Rare": "SAR",
     "Hyper Rare": "SAR",
     "Character Ultra Rare": "AR",
     "Promo": "Other"
