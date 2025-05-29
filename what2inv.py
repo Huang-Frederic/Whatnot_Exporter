@@ -5,9 +5,9 @@ from utils.inventory_utils import process_csv
 # === Constantes globales ===
 
 BASE_PRICE_BY_RARITY = {
-    "SAR": 2.89, "SR": 2.92, "AR": 1.98,
-    "RRR": 0.84, "RR": 0.30, "Shiny": 0.7,
-    "Other": 0.40, "ERROR": -999
+    "SAR": 2.89, "SR": 1.88, "AR": 1.98,
+    "RRR": 0.5, "RR": 0.32, "Shiny": 0.7,
+    "Other": 0.20, "ERROR": -999
 }
 
 LANGUAGES = ["JP", "EN", "FR", "DE", "IT", "ES", "CN"]

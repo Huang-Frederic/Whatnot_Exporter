@@ -4,3 +4,13 @@ requests==2.32.3
 tqdm==4.67.1
 selenium==4.33.0
 undetected-chromedriver==3.5.5
+
+
+taskkill /F /IM chrome.exe
+Start-Process -FilePath "C:\Program Files\Google\Chrome\Application\chrome.exe" `
+  -ArgumentList '--remote-debugging-port=9222', `
+                '--user-data-dir="C:\Users\Frédéric\AppData\Local\Google\Chrome\User Data"', `
+                '--profile-directory="Default"'
+
+
+http://localhost:9222/json

@@ -1,22 +1,25 @@
 
-import undetected_chromedriver as uc
+from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 import time
 import pandas as pd
 import os
 
+# === CONFIG PROFIL LOCAL ===
+CHROME_USER_DIR = "C:/Users/Frédéric/AppData/Local/Google/Chrome/User Data"
+CHROME_PROFILE = "Profile 2"  # ou "Profile 1", "Profile 2", etc.
+
 
 def run_scraping(csv_path):
-    # === CONFIG SELENIUM AVEC PROTECTION CLOUDFLARE ===
-    options = uc.ChromeOptions()
+    options = webdriver.ChromeOptions()
     options.add_argument("--start-maximized")
-    driver = uc.Chrome(options=options)
+    options.add_argument(f"--user-data-dir={CHROME_USER_DIR}")
+    options.add_argument(f"--profile-directory={CHROME_PROFILE}")
+    options.add_experimental_option("excludeSwitches", ["enable-automation"])
+    options.add_experimental_option("useAutomationExtension", False)
 
-    # === OUVERTURE VINTED ===
-    driver.get("https://www.vinted.fr")
-    print("🔐 Merci de te connecter manuellement à Vinted.")
-    input("✅ Appuie sur Entrée une fois connecté(e) et prêt(e) à continuer...")
+    driver = webdriver.Chrome(options=options)
 
     # === LECTURE CSV ===
     df = pd.read_csv(csv_path)
@@ -24,92 +27,96 @@ def run_scraping(csv_path):
         print("❌ Le fichier CSV est vide.")
         return
 
-    # === UNE SEULE ANNONCE POUR LE TEST ===
-    row = df.iloc[0]
-    print(f"📤 Publication de : {row['Title']}")
+    for index, row in df.iterrows():
+        print(f"📤 Remplissage {index+1}/{len(df)} : {row['Title']}")
+        driver.execute_script("window.open('');")
+        driver.switch_to.window(driver.window_handles[-1])
+        driver.get("https://www.vinted.fr/items/new")
+        time.sleep(4)
 
-    # === NAVIGUER VERS LE FORMULAIRE DE VENTE ===
-    driver.get("https://www.vinted.fr/items/new")
-    time.sleep(3)
+        # TITRE
+        try:
+            driver.find_element(By.NAME, "title").send_keys(row["Title"])
+        except Exception as e:
+            print(f"[{index+1}] ❌ Erreur Titre :", e)
 
-    # === TITRE ===
-    try:
-        driver.find_element(By.NAME, "title").send_keys(row["Title"])
-    except Exception as e:
-        print("❌ Erreur champ titre :", e)
+        # PRIX
+        try:
+            price = str(row["Price"])
+            price_input = driver.find_element(By.ID, "price")
+            price_input.click()
+            price_input.clear()
+            for char in price:
+                price_input.send_keys(char)
+                time.sleep(0.05)
+        except Exception as e:
+            print(f"[{index+1}] ❌ Erreur Prix :", e)
 
-    # === PRIX ===
-    try:
-        price = str(row["Price"])
-        price_input = driver.find_element(By.ID, "price")
-        price_input.click()
-        price_input.clear()
-        for char in price:
-            price_input.send_keys(char)
-            time.sleep(0.05)
-        print("💶 Prix injecté :", price)
-    except Exception as e:
-        print("❌ Erreur saisie prix :", e)
+        # DESCRIPTION
+        try:
+            desc = row["Description"]
+            desc_area = driver.find_element(
+                By.CSS_SELECTOR, 'textarea[data-testid="description--input"]')
+            desc_area.click()
+            desc_area.clear()
+            for char in desc:
+                desc_area.send_keys(char)
+        except Exception as e:
+            print(f"[{index+1}] ❌ Erreur Description :", e)
 
-    # === DESCRIPTION ===
-    try:
-        desc = row["Description"]
-        desc_area = driver.find_element(
-            By.CSS_SELECTOR, 'textarea[data-testid="description--input"]')
-        desc_area.click()
-        desc_area.clear()
-        for char in desc:
-            desc_area.send_keys(char)
-    except Exception as e:
-        print("❌ Erreur sur la description :", e)
+        # CATÉGORIE
+        try:
+            cat_input = driver.find_element(
+                By.CSS_SELECTOR, '[data-testid="catalog-select-dropdown-input"]')
+            cat_input.click()
+            time.sleep(1)
+            cat_input.send_keys("Single trading cards")
+            cat_input.send_keys(Keys.ENTER)
+        except Exception as e:
+            print(f"[{index+1}] ❌ Erreur Catégorie :", e)
 
-    # === CATÉGORIE ===
-    try:
-        cat_input = driver.find_element(
-            By.CSS_SELECTOR, '[data-testid="catalog-select-dropdown-input"]')
-        cat_input.click()
-        time.sleep(1)
-        cat_input.send_keys("Single trading cards")
-        cat_input.send_keys(Keys.ENTER)
-    except Exception as e:
-        print("❌ Erreur sélection catégorie :", e)
+        # CONDITION
+        try:
+            condition = row["Condition"]
+            condition_input = driver.find_element(By.ID, "status_id")
+            condition_input.click()
+            time.sleep(1)
+            condition_input.send_keys(condition)
+            condition_input.send_keys(Keys.ENTER)
+        except Exception as e:
+            print(f"[{index+1}] ❌ Erreur Condition :", e)
 
-    # === CONDITION ===
-    try:
-        condition = row["Condition"]
-        condition_input = driver.find_element(By.ID, "status_id")
-        condition_input.click()
-        time.sleep(1)
-        condition_input.send_keys(condition)
-        condition_input.send_keys(Keys.ENTER)
-    except Exception as e:
-        print("❌ Erreur sélection condition :", e)
+        # FORMAT DE COLIS
+        try:
+            package_map = {
+                "Small": "1",
+                "Medium": "2",
+                "Large": "3"
+            }
+            package_id = package_map.get(row["Package"], "1")
+            driver.find_element(By.ID, f"package-size-{package_id}").click()
+        except Exception as e:
+            print(f"[{index+1}] ❌ Erreur Colis :", e)
 
-    # === FORMAT DE COLIS ===
-    try:
-        package_map = {
-            "Small": "1",
-            "Medium": "2",
-            "Large": "3"
-        }
-        package_id = package_map.get(row["Package"], "1")
-        driver.find_element(By.ID, f"package-size-{package_id}").click()
-    except Exception as e:
-        print("❌ Erreur sélection colis :", e)
+         # === UPLOAD PHOTOS ===
+        try:
+            file_input = driver.find_element(
+                By.CSS_SELECTOR, 'input[type="file"]')
+            paths = "\n".join([
+                os.path.abspath(row["Picture_1"]),
+                os.path.abspath(row["Picture_2"])
+            ])
+            file_input.send_keys(paths)
+            print("🖼️ Images uploadées.")
+        except Exception as e:
+            print("❌ Erreur upload images :", e)
 
-    # === UPLOAD PHOTOS ===
-    try:
-        file_input = driver.find_element(By.CSS_SELECTOR, 'input[type="file"]')
-        paths = "\n".join([
-            os.path.abspath(row["Picture_1"]),
-            os.path.abspath(row["Picture_2"])
-        ])
-        file_input.send_keys(paths)
-        print("🖼️ Images uploadées.")
-    except Exception as e:
-        print("❌ Erreur upload images :", e)
+        print(f"[{index+1}] ✅ Fiche prête !")
 
-    # === FIN ===
-    print("✅ Fiche pré-remplie. Vérifie et clique sur 'Mettre en ligne' manuellement !")
-    input("🛑 Appuie sur Entrée pour fermer le navigateur quand tu as fini.")
+    print("🧾 Toutes les fiches sont ouvertes. Poste-les manuellement.")
+    input("🛑 Appuie sur Entrée pour fermer le navigateur quand tu as terminé.")
     driver.quit()
+
+
+if __name__ == "__main__":
+    run_scraping("vinted_ready.csv")
