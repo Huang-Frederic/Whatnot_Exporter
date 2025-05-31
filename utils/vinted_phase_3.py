@@ -163,11 +163,16 @@ def run_scraping(csv_path):
     print(f"🔄 Démarrage du traitement de {len(df)} fiches...\n")
     for index, row in tqdm(df.iterrows(), total=len(df), desc="Fiches remplies"):
         print(f"\n🧾 Fiche {index+1} / {len(df)} : {row['Title']}")
-        driver.execute_script(f"window.open('{VINTED_URL}');")
-        driver.switch_to.window(driver.window_handles[-1])
+        try:
+            driver.execute_script(f"window.open('{VINTED_URL}');")
+            driver.switch_to.window(driver.window_handles[-1])
+        except Exception as e:
+            print(f"❌ Erreur lors de la connexion à Chrome : {e}")
+            return
         print(f"🔍 Ouverture de la page item : {row['Title']}")
         random_sleep(2, 2.25)
         fill_form(driver, row)
+        input("🔄 Apuuyez sur Entrée pour lancer la prochaine fiche")
 
     print("\n🎉 Toutes les fiches ont été traitées.")
 

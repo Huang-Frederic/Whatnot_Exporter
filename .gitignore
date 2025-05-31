@@ -1,6 +1,6 @@
 env/
 __pycache__/
-*.csv
+# *.csv
 data_input/
 data_output/
-vinted_images/
+# vinted_images/

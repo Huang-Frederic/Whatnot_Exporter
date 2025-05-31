@@ -4,10 +4,10 @@ from utils.vinted_phase_2 import link_images_to_csv
 from utils.vinted_phase_3 import run_scraping
 
 # === PARAMÈTRES GLOBAUX ===
-PHASE = 1  # 1 = génération CSV / 2 = liaison images / 3 = scraping
+PHASE = 3  # 1 = génération CSV / 2 = liaison images / 3 = scraping
 INPUT_CSV = "vinted_data/vintedlot.csv"
 OUTPUT_CSV = f"vinted_data/output_vintedlot.csv"
-IMAGE_FOLDER = "vinted_images"
+IMAGE_FOLDER = "vinted_images/vintedlot"
 DEFAULTS = {
     "CATEGORY": "Lot",  # "Unit" pour une carte seule, "Lot" pour plusieurs cartes
     "PACKAGE": "Small",  # "Small" pour envoi simple, "Medium"/"Large" si plusieurs cartes ou objets
