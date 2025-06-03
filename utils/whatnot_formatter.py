@@ -68,6 +68,7 @@ def annex_images(df, github_url, background_path):
     image_urls = []
     for id_str in tqdm(df["Id"], desc="🖼️ Génération des images Whatnot"):
         image_filename = f"whatnot-images/{id_str}.png"
+
         if os.path.exists(image_filename):
             image_urls.append(f"{github_url}/{id_str}.png")
         else:
