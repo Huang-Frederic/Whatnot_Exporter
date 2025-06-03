@@ -36,7 +36,6 @@ def random_sleep(min_s=0.5, max_s=2.0):
     time.sleep(duration)
 
 
-
 def fill_form(driver, row):
     print("➡️ Remplissage du formulaire...")
 
@@ -74,7 +73,7 @@ def fill_form(driver, row):
         desc_area.clear()
         for char in desc:
             desc_area.send_keys(char)
-            
+
         print("📝 Description remplie.")
         random_sleep(2, 2.25)
     except Exception as e:
@@ -175,4 +174,3 @@ def run_scraping(csv_path):
         input("🔄 Apuuyez sur Entrée pour lancer la prochaine fiche")
 
     print("\n🎉 Toutes les fiches ont été traitées.")
-

@@ -4,16 +4,17 @@ from utils.vinted_phase_2 import link_images_to_csv
 from utils.vinted_phase_3 import run_scraping
 
 # === PARAMÈTRES GLOBAUX ===
-PHASE = 3  # 1 = génération CSV / 2 = liaison images / 3 = scraping
-INPUT_CSV = "vinted_data/vintedlot.csv"
-OUTPUT_CSV = f"vinted_data/output_vintedlot.csv"
+PHASE = 1  # 1 = génération CSV / 2 = liaison images / 3 = scraping
+INPUT_CSV = "vinted_data/update.csv"
+OUTPUT_CSV = f"vinted_data/output_update.csv"
 IMAGE_FOLDER = "vinted_images/vintedlot"
 DEFAULTS = {
-    "CATEGORY": "Lot",  # "Unit" pour une carte seule, "Lot" pour plusieurs cartes
-    "PACKAGE": "Small",  # "Small" pour envoi simple, "Medium"/"Large" si plusieurs cartes ou objets
+    "CATEGORY": "Unit",  # "Unit" pour une carte seule, "Lot" pour plusieurs cartes
+    # "Small" pour envoi simple, "Medium"/"Large" si plusieurs cartes ou objets
+    "PACKAGE": "Small",
 
     "CONDITION": "Very Good",  # Voir CONDITION_MAP ci-dessous
-    "LOCALE": "JP",  # Langue de la carte (EN, FR, JP, CN…)
+    "LOCALE": "FR",  # Langue de la carte (EN, FR, JP, CN…)
 
     "CONDITION_MAP": {
         "Very Good": "Très bon état (Near Mint), carte en excellent état (voir photos).",

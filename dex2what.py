@@ -3,7 +3,7 @@ import os
 from utils.whatnot_formatter import format_whatnot_csv
 
 GITHUB_BASE_URL = "https://raw.githubusercontent.com/Huang-Frederic/Whatnot_Exporter/master/whatnot-images"
-BACKGROUND_PATH = "assets/bqckground2.png"
+BACKGROUND_PATH = "assets/background5.png"
 
 # TODO : PRICES SHOULD BE ROUNDED, GIVEAWAY ERROR
 
@@ -11,7 +11,7 @@ BASE_PRICE_BY_RARITY = {
     "SAR": 5.0,
     "SR": 3.0,
     "AR": 3.0,
-    "RRR": 1.0,
+    "RRR": 5.0,
     "RR": 1.0,
     "Shiny": 1.0,
     "Other": 1.0,
@@ -25,7 +25,7 @@ BASE_LISTINGS = [
         "Quantity": 237,
         "Prix": 3,
         "Image URL 1": "Single.png",
-        "include": True
+        "include": False
     },
     {
         "Titre": "Lot 2 AR + 1 EX - JP",

@@ -11,14 +11,22 @@ def generate_title(row, DEFAULTS):
     """
     Generate the title for a Vinted listing based on the row data.
     """
-    locale = DEFAULTS["LOCALE"]
-    
     name = row["Name"]
     formatted_id = format_id(row["Id"])
-    locale_code = format_locale_code(row["Locale"], locale)
     set_name = row["Set"] if pd.notna(row["Set"]) else ""
 
-    if DEFAULTS["CATEGORY"]  == "Lot":
+    # Gestion spécifique de Locale
+    if row["Locale"] == "Japan":
+        locale_code = "JP"
+    elif row["Locale"] == "China":
+        locale_code = "CN"
+    elif row["Locale"] == "International":
+        locale_code = DEFAULTS["LOCALE"]
+    else:
+        # Sinon, on garde le comportement par défaut
+        locale_code = format_locale_code(row["Locale"], DEFAULTS["LOCALE"])
+
+    if DEFAULTS["CATEGORY"] == "Lot":
         return f"Lot de Cartes Pokémon {name}"
     else:
         return f"Carte Pokémon {name} - {row['Rarity']} - {set_name} ({formatted_id}) [{locale_code}]"
@@ -30,13 +38,23 @@ def generate_description(row, DEFAULTS):
     rarity = f"{rarity_code} {row['Rarity']}"
     series = row["Set"]
     set_name = row["Id"]
-    locale_code = DEFAULTS["LOCALE"]
+    # Gestion spécifique de Locale
+    if row["Locale"] == "Japan":
+        locale_code = "JP"
+    elif row["Locale"] == "China":
+        locale_code = "CN"
+    elif row["Locale"] == "International":
+        locale_code = DEFAULTS["LOCALE"]
+    else:
+        # Sinon, on garde le comportement par défaut
+        locale_code = format_locale_code(row["Locale"], DEFAULTS["LOCALE"])
     condition_code = DEFAULTS["CONDITION"]
 
     locale_full = DEFAULTS["LOCALE_MAP"].get(locale_code, locale_code)
-    condition_full = DEFAULTS["CONDITION_MAP"].get(condition_code, condition_code)
+    condition_full = DEFAULTS["CONDITION_MAP"].get(
+        condition_code, condition_code)
 
-    if DEFAULTS["CATEGORY"]  == "Lot":
+    if DEFAULTS["CATEGORY"] == "Lot":
         template = DEFAULTS["DESC_TEMPLATE_LOT"]
     else:
         template = DEFAULTS["DESC_TEMPLATE_UNIT"]
