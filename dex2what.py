@@ -9,7 +9,7 @@ BACKGROUND_PATH = "assets/background5.png"
 
 BASE_PRICE_BY_RARITY = {
     "SAR": 5.0,
-    "SR": 3.0,
+    "SR": 4.0,
     "AR": 3.0,
     "RRR": 5.0,
     "RR": 1.0,
@@ -22,10 +22,10 @@ BASE_LISTINGS = [
     {
         "Titre": "AR vu en Live - JP",
         "Description": "AR",
-        "Quantity": 237,
+        "Quantity": 43,
         "Prix": 3,
         "Image URL 1": "Single.png",
-        "include": False
+        "include": True
     },
     {
         "Titre": "Lot 2 AR + 1 EX - JP",
@@ -57,7 +57,7 @@ BASE_LISTINGS = [
         "Quantity": 15,
         "Prix": 1,
         "Image URL 1": "25a.png",
-        "include": True
+        "include": False
     },
     {
         "Titre": "Lot 1RRR + 1RR - JP",
@@ -76,12 +76,28 @@ BASE_LISTINGS = [
         "include": False
     },
     {
-        "Titre": "RRR/RR VU EN LIVE - JP",
+        "Titre": "Lot GemPack 1 - CN",
+        "Description": "5Other",
+        "Quantity": 22,
+        "Prix": 5,
+        "Image URL 1": "Lots.png",
+        "include": True
+    },
+    {
+        "Titre": "EX VU EN LIVE - JP",
         "Description": "1RR",
         "Quantity": 20,
         "Prix": 1,
         "Image URL 1": "1RR.png",
-        "include": False
+        "include": True
+    },
+    {
+        "Titre": "Carte vu en Live - JP",
+        "Description": "CC - JP",
+        "Quantity": 19,
+        "Prix": 1,
+        "Image URL 1": "Lots.png",
+        "include": True
     },
     {
         "Titre": "Lot Custom",
@@ -89,7 +105,7 @@ BASE_LISTINGS = [
         "Quantity": 31,
         "Prix": 1,
         "Image URL 1": "Lots.png",
-        "include": True
+        "include": False
     }
 ]
 
@@ -102,7 +118,7 @@ RARITY_MAP = {
     "Shiny Ultra Rare": "SR",
     "Secret Rare": "SR",
     "Rare Shiny": "Shiny",
-    "Double Rare": "RRR",
+    "Double Rare": "RR",
     "Rare Ultra": "AR",
     "Rare Secret": "SR",
     "Art Rare": "AR",
@@ -110,7 +126,8 @@ RARITY_MAP = {
     "Secret Art Rare": "SAR",
     "Hyper Rare": "SAR",
     "Character Ultra Rare": "AR",
-    "Promo": "Other"
+    "Promo": "Other",
+    "Rare": "Other",
 }
 
 LOCALE_MAP = {
