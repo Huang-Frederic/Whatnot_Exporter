@@ -1,21 +1,100 @@
-
 import pandas as pd
-import os
 from .vinted_utils import (
     format_rarity, format_locale_code, format_locale_full,
     format_id, generate_description
 )
 
 
+def preprocess(df, DEFAULTS):
+    set_translation_map = {
+        # Scarlet & Violet era
+        "Destined Rivals": "Rivalités Destinées",
+        "Journey Together": "Aventure Ensemble",
+        "Prismatic Evolutions": "Évolutions Prismatiques",
+        "Surging Sparks": "Étincelles Déferlantes",
+        "Stellar Crown": "Couronne Stellaire",
+        "Shrouded Fable": "Fable Nébuleuse",
+        "Twilight Masquerade": "Mascarade Crépusculaire",
+        "Temporal Forces": "Forces Temporelles",
+        "Paldean Fates": "Destinées de Paldea",
+        "Paradox Rift": "Faille Paradoxe",
+        "151": "151",
+        "Obsidian Flames": "Flammes Obsidiennes",
+        "Paldea Evolved": "Evolution à Paldea",
+        "Scarlet & Violet": "Écarlate & Violet",
+        "Black Star Promos": "Promos Écarlate & Violet",
+        "Scarlet & Violet Promos": "Promos Écarlate & Violet",
+
+        # Sword & Shield era
+        "Crown Zenith": "Zenith Suprême",
+        "Silver Tempest": "Tempête Argenté",
+        "Lost Origin": "Origine Perdue",
+        "Pokémon GO": "Pokémon GO",
+        "Astral Radiance": "Astres Radieux",
+        "Brilliant Stars": "Stars Etincelantes",
+        "Fusion Strike": "Poing de Fusion",
+        "Celebrations": "Celebrations",
+        "Evolving Skies": "Evolution Céleste",
+        "Chilling Reign": "Règne de Glace",
+        "Battle Styles": "Styles de Combat",
+        "Shining Fates": "Destinées Radieuses",
+        "Vivid Voltage": "Voltage Éclatant",
+        "Champion's Path": "Voie du Maître",
+        "Darkness Ablaze": "Ténèbres Embrasées",
+        "Rebel Clash": "Clash des Rebelles",
+        "Sword & Shield": "Épée & Bouclier",
+        "Black Star Promos": "Promos Épée & Bouclier",
+    }
+
+    series_translation_map = {
+        "Scarlet & Violet": "Écarlate & Violet",
+        "Sword & Shield": "Épée & Bouclier",
+        "Sun & Moon": "Soleil & Lune",
+        "XY": "XY",
+        "Black & White": "Noir & Blanc",
+        "HeartGold & SoulSilver": "HeartGold & SoulSilver",
+        "Platinum": "Platinum",
+        "Diamond & Pearl": "Diamant & Perle",
+        "EX": "EX",
+        "POP": "POP",
+        "e-Series": "e‑Series",
+        "Neo": "Neo",
+        "Original": "Original",
+        "Call of Legends": "Appel des Légendes",
+        "Legendary": "Legendary",
+        "PCG": "PCG",
+    }
+
+    if DEFAULTS.get("LOCALE") == "FR":
+        df["Set"] = df["Set"].map(lambda x: set_translation_map.get(x, x))
+        df["Series"] = df["Series"].map(
+            lambda x: series_translation_map.get(x, x))
+
+    def localize_name(name):
+        if DEFAULTS.get("LOCALE") == "FR" and "'s " in name:
+            parts = name.split("'s ")
+            if len(parts) == 2:
+                x, rest = parts
+                return f"{rest} de {x}"
+        return name
+
+    df["Name"] = df["Name"].map(localize_name)
+
+    df["Rarity"] = df.apply(
+        lambda row: row["Variant"] if row["Variant"] in [
+            "Master Ball Holo", "Poké Ball Holo"] else row["Rarity"],
+        axis=1
+    )
+
+    df = df[df["Quantity"] > 0].copy()
+    return df
+
+
 def generate_title(row, DEFAULTS):
-    """
-    Generate the title for a Vinted listing based on the row data.
-    """
     name = row["Name"]
     formatted_id = format_id(row["Id"])
     set_name = row["Set"] if pd.notna(row["Set"]) else ""
 
-    # Gestion spécifique de Locale
     if row["Locale"] == "Japan":
         locale_code = "JP"
     elif row["Locale"] == "China":
@@ -23,7 +102,6 @@ def generate_title(row, DEFAULTS):
     elif row["Locale"] == "International":
         locale_code = DEFAULTS["LOCALE"]
     else:
-        # Sinon, on garde le comportement par défaut
         locale_code = format_locale_code(row["Locale"], DEFAULTS["LOCALE"])
 
     if DEFAULTS["CATEGORY"] == "Lot":
@@ -32,54 +110,10 @@ def generate_title(row, DEFAULTS):
         return f"Carte Pokémon {name} - {row['Rarity']} - {set_name} ({formatted_id}) [{locale_code}]"
 
 
-def generate_description(row, DEFAULTS):
-    rarity_code = format_rarity(row["Rarity"])
-    name = row["Name"]
-    rarity = f"{rarity_code} {row['Rarity']}"
-    series = row["Set"]
-    set_name = row["Id"]
-    # Gestion spécifique de Locale
-    if row["Locale"] == "Japan":
-        locale_code = "JP"
-    elif row["Locale"] == "China":
-        locale_code = "CN"
-    elif row["Locale"] == "International":
-        locale_code = DEFAULTS["LOCALE"]
-    else:
-        # Sinon, on garde le comportement par défaut
-        locale_code = format_locale_code(row["Locale"], DEFAULTS["LOCALE"])
-    condition_code = DEFAULTS["CONDITION"]
-
-    locale_full = DEFAULTS["LOCALE_MAP"].get(locale_code, locale_code)
-    condition_full = DEFAULTS["CONDITION_MAP"].get(
-        condition_code, condition_code)
-
-    if DEFAULTS["CATEGORY"] == "Lot":
-        template = DEFAULTS["DESC_TEMPLATE_LOT"]
-    else:
-        template = DEFAULTS["DESC_TEMPLATE_UNIT"]
-
-    description = template.format(
-        name=name,
-        rarity=rarity,
-        series=series,
-        set=set_name,
-        locale_full=locale_full,
-        condition_full=condition_full
-    )
-
-    if condition_code == "Average":
-        description += "\n⚠️ Défauts visibles : à compléter manuellement."
-
-    return description
-
-
 def parse_dex_csv(input_path, output_path, DEFAULTS):
-    """
-    Parse the input CSV file and generate a new CSV file with formatted titles and descriptions.
-    """
-    # os.makedirs(os.path.dirname(output_path), exist_ok=True)
     df = pd.read_csv(input_path, encoding="utf-16", sep=";")
+    df = preprocess(df, DEFAULTS)
+
     df_out = pd.DataFrame()
     df_out["Title"] = df.apply(
         lambda row: generate_title(row, DEFAULTS), axis=1)
@@ -92,4 +126,4 @@ def parse_dex_csv(input_path, output_path, DEFAULTS):
     df_out["Picture_1"] = ""
     df_out["Picture_2"] = ""
     df_out.to_csv(output_path, index=False)
-    print("✅ Fichier généré :", output_path)
+    print("✅ File generated:", output_path)

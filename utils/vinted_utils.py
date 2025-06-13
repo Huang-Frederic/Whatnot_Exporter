@@ -1,25 +1,38 @@
-
 import pandas as pd
 import re
 
 
-def format_rarity(rarity):
+def format_rarity(rarity: str) -> str:
     """
-    Format the full name of the rarity to an acronym.
-    egg: "Rare Holo" -> "RH"
+    Normalize a card's rarity into standard acronyms for Vinted listings.
+    Returns: RR, RRR, AR, SAR, SR, P, M/P Ball, ERROR
     """
-    if pd.isna(rarity):
-        return ""
-    return "".join(word[0].upper() for word in rarity.split())
+    if not isinstance(rarity, str):
+        return "ERROR"
+
+    normalized = rarity.strip().lower()
+
+    if normalized in ["holo rare v", "double rare", "rare holo", "holo rare", "holo"]:
+        return "RR"
+    elif normalized in ["double rare holo"]:
+        return "RRR"
+    elif normalized in ["shiny ultra rare", "super rare", "full art rare"]:
+        return "SR"
+    elif normalized in ["ar", "art rare", "illustration rare", "rare illustration"]:
+        return "AR"
+    elif normalized in ["sar", "special art rare", "ultra rare", "rare ultra"]:
+        return "SAR"
+    elif normalized in ["promo", "promo holo", "holo promo", "holo rare promo"]:
+        return "P"
+    elif normalized in ["master ball holo", "poké ball holo"]:
+        return "M/P Ball"
+    else:
+        return "ERROR"
 
 
 def format_locale_code(locale, default_locale_global):
-    """
-    Format the Locale Name to the Acrronym
-    e.g. "Japan" -> "JP"
-    """
     if locale == "Japan":
-        return "JAP"
+        return "JP"
     elif locale == "China":
         return "CN"
     else:
@@ -27,10 +40,6 @@ def format_locale_code(locale, default_locale_global):
 
 
 def format_locale_full(locale, default_locale_global):
-    """
-    Format the Locale Name to the descriptive Full Name
-    e.g. "Japan" -> "Japonais"
-    """
     if locale == "Japan":
         return "Japonais"
     elif locale == "China":
@@ -42,10 +51,6 @@ def format_locale_full(locale, default_locale_global):
 
 
 def format_id(card_id):
-    """
-    Format the Card ID to a more readable format
-    e.g. "jp_sv9a-70" -> "SV9A 70"
-    """
     if pd.isna(card_id):
         return ""
     card_id = re.sub(r"^(jpn_|cn_|eng_|fr_)", "", card_id, flags=re.IGNORECASE)
@@ -58,14 +63,41 @@ def format_id(card_id):
 
 
 def generate_description(row, DEFAULTS):
-    """
-    Generate the Description for the Card according to the template
-    """
-    return DEFAULTS["DESC_TEMPLATE"].format(
-        name=row["Name"],
-        rarity=row["Rarity"] if pd.notna(row["Rarity"]) else "",
-        series=row["Series"] if pd.notna(row["Series"]) else "",
-        set=row["Set"] if pd.notna(row["Set"]) else "",
-        locale_full=format_locale_full(row["Locale"], DEFAULTS["LOCALE"]),
-        condition=DEFAULTS["CONDITION"]
+    rarity_code = format_rarity(row["Rarity"])
+    name = row["Name"]
+    rarity = f"{rarity_code} {row['Rarity']}"
+    series = row["Set"]
+    set_name = row["Id"]
+
+    if row["Locale"] == "Japan":
+        locale_code = "JP"
+    elif row["Locale"] == "China":
+        locale_code = "CN"
+    elif row["Locale"] == "International":
+        locale_code = DEFAULTS["LOCALE"]
+    else:
+        locale_code = format_locale_code(row["Locale"], DEFAULTS["LOCALE"])
+
+    condition_code = DEFAULTS["CONDITION"]
+    locale_full = DEFAULTS["LOCALE_MAP"].get(locale_code, locale_code)
+    condition_full = DEFAULTS["CONDITION_MAP"].get(
+        condition_code, condition_code)
+
+    if DEFAULTS["CATEGORY"] == "Lot":
+        template = DEFAULTS["DESC_TEMPLATE_LOT"]
+    else:
+        template = DEFAULTS["DESC_TEMPLATE_UNIT"]
+
+    description = template.format(
+        name=name,
+        rarity=rarity,
+        series=series,
+        set=set_name,
+        locale_full=locale_full,
+        condition_full=condition_full
     )
+
+    if condition_code == "Average":
+        description += "\n⚠️ Visible flaws: please update manually."
+
+    return description
