@@ -3,7 +3,7 @@ import os
 from utils.whatnot_formatter import format_whatnot_csv
 
 GITHUB_BASE_URL = "https://raw.githubusercontent.com/Huang-Frederic/Whatnot_Exporter/master/whatnot-images"
-BACKGROUND_PATH = "assets/background5.png"
+BACKGROUND_PATH = "assets/Background.png"
 
 # TODO : PRICES SHOULD BE ROUNDED, GIVEAWAY ERROR
 

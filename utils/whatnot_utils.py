@@ -33,9 +33,9 @@ def generate_card_img(card_full_id, image_url, github_url, background_path, save
 
         fond_w, fond_h = fond.size
         carte = carte.resize(
-            (int(fond_w * 0.6), int(fond_h * 0.6)), Image.Resampling.LANCZOS)
+            (int(fond_w * 0.72), int(fond_h * 0.65)), Image.Resampling.LANCZOS)
 
-        pos = ((fond_w - carte.width) // 2, (fond_h - carte.height) // 2 + 100)
+        pos = ((fond_w - carte.width) // 2, (fond_h - carte.height) // 2 - 50)
         fond.paste(carte, pos, carte)
 
         filename = f"{card_full_id}.png"
