@@ -11,7 +11,8 @@ BASE_PRICE_BY_RARITY = {
     "SAR": 5.0,
     "SR": 4.0,
     "AR": 3.0,
-    "RRR": 5.0,
+    "CHR": 3.0,
+    "RRR": 2.0,
     "RR": 1.0,
     "Shiny": 1.0,
     "Other": 1.0,
@@ -57,7 +58,7 @@ BASE_LISTINGS = [
         "Quantity": 15,
         "Prix": 1,
         "Image URL 1": "25a.png",
-        "include": False
+        "include": True
     },
     {
         "Titre": "Lot 1RRR + 1RR - JP",
@@ -97,7 +98,7 @@ BASE_LISTINGS = [
         "Quantity": 19,
         "Prix": 1,
         "Image URL 1": "Lots.png",
-        "include": True
+        "include": False
     },
     {
         "Titre": "Lot Custom",
@@ -114,7 +115,7 @@ RARITY_MAP = {
     "Uncommon": "Other",
     "Rare": "Other",
     "Ultra Rare Shiny": "SR",
-    "Ultra Rare": "SR",
+    "Ultra Rare": "CHR",
     "Shiny Ultra Rare": "SR",
     "Secret Rare": "SR",
     "Rare Shiny": "Shiny",

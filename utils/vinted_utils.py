@@ -16,18 +16,18 @@ def format_rarity(rarity: str) -> str:
         return "RR"
     elif normalized in ["double rare holo"]:
         return "RRR"
-    elif normalized in ["shiny ultra rare", "super rare", "full art rare"]:
+    elif normalized in ["shiny ultra rare", "super rare", "full art rare", "ultra rare"]:
         return "SR"
-    elif normalized in ["ar", "art rare", "illustration rare", "rare illustration"]:
+    elif normalized in ["ar", "art rare", "illustration rare", "rare illustration", "trainer gallery holo rare"]:
         return "AR"
-    elif normalized in ["sar", "special art rare", "ultra rare", "rare ultra"]:
+    elif normalized in ["sar", "special art rare", "rare ultra"]:
         return "SAR"
     elif normalized in ["promo", "promo holo", "holo promo", "holo rare promo"]:
         return "P"
     elif normalized in ["master ball holo", "poké ball holo"]:
         return "M/P Ball"
     else:
-        return "ERROR"
+        return "_"
 
 
 def format_locale_code(locale, default_locale_global):

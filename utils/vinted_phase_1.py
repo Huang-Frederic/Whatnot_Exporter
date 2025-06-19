@@ -27,6 +27,7 @@ def preprocess(df, DEFAULTS):
 
         # Sword & Shield era
         "Crown Zenith": "Zenith Suprême",
+        "Crown Zenith: Galarian Gallery": "Zenith Suprême : Galerie de Galar",
         "Silver Tempest": "Tempête Argenté",
         "Lost Origin": "Origine Perdue",
         "Pokémon GO": "Pokémon GO",
@@ -117,12 +118,12 @@ def parse_dex_csv(input_path, output_path, DEFAULTS):
     df_out = pd.DataFrame()
     df_out["Title"] = df.apply(
         lambda row: generate_title(row, DEFAULTS), axis=1)
+    df_out["Description"] = df.apply(
+        lambda row: generate_description(row, DEFAULTS), axis=1)
     df_out["Price"] = ""
     df_out["Category"] = DEFAULTS["CATEGORY"]
     df_out["Package"] = DEFAULTS["PACKAGE"]
     df_out["Condition"] = DEFAULTS["CONDITION"]
-    df_out["Description"] = df.apply(
-        lambda row: generate_description(row, DEFAULTS), axis=1)
     df_out["Picture_1"] = ""
     df_out["Picture_2"] = ""
     df_out.to_csv(output_path, index=False)

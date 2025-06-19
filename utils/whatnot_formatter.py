@@ -25,7 +25,7 @@ def load_base_listings(base_listing, github_url):
             base_rows.append({
                 "Catégorie": "Trading Card Games",
                 "Sous-catégorie": "Cartes Pokémon",
-                "Titre": base["Titre"],
+                "Titre": f"0 - {base['Titre']}",
                 "Description": base["Description"],
                 "Quantité": base["Quantity"],
                 "Type": "Auction" if base["Prix"] > 0 else "Giveaway",
@@ -54,7 +54,8 @@ def annex_whatnot_format(df, locale_map, rarity_map, base_price_by_rarity):
     df["Formatted ID"] = df["Id"].map(format_id)
     df["Titre"] = df["Name"] + " - " + \
         df["Formatted ID"] + " - " + df["Langue"]
-
+    df = df.reset_index(drop=True)
+    df["Titre"] = (df.index + 1).astype(str) + " - " + df["Titre"]
     df["Rareté"] = df["Rarity"].map(rarity_map)
     df["Rareté"] = df["Rareté"].fillna(df["Rarity"].apply(
         lambda r: "ERROR" if r.strip() == "—" else r))
