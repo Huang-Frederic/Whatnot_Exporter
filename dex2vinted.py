@@ -5,8 +5,8 @@ from utils.vinted_phase_3 import run_scraping
 
 # === PARAMÈTRES GLOBAUX ===
 PHASE = 1  # 1 = génération CSV / 2 = liaison images / 3 = scraping
-INPUT_CSV = "vinted_data/vinted1706cn.csv"
-OUTPUT_CSV = f"vinted_data/output_vinted1706cn.csv"
+INPUT_CSV = "vinted_data/bw.csv"
+OUTPUT_CSV = f"vinted_data/output_bw.csv"
 IMAGE_FOLDER = "vinted_images/vintedlot"
 DEFAULTS = {
     "CATEGORY": "Unit",  # "Unit" pour une carte seule, "Lot" pour plusieurs cartes
