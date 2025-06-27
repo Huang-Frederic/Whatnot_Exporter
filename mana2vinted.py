@@ -36,8 +36,8 @@ def parse_mana_csv(input_csv, output_csv, defaults):
         setname = row["Set name"]
         setcode = row["Set code"]
         lang = row["Language"].upper()
-        foil_tag = "FOIL" if row["Foil"].strip(
-        ).lower() == "foil" else "NON FOIL"
+        foil_tag = "Foil" if row["Foil"].strip(
+        ).lower() == "foil" else "Non Foil"
         return f"{name} #{num} ({lang}) - {setname} ({setcode}) - {foil_tag}"
 
     def build_description(row):

@@ -25,7 +25,7 @@ def load_base_listings(base_listing, github_url):
             base_rows.append({
                 "Catégorie": "Trading Card Games",
                 "Sous-catégorie": "Cartes Pokémon",
-                "Titre": f"0 - {base['Titre']}",
+                "Titre": f"{base['Titre']}" ,
                 "Description": base["Description"],
                 "Quantité": base["Quantity"],
                 "Type": "Auction" if base["Prix"] > 0 else "Giveaway",
@@ -48,14 +48,17 @@ def load_base_listings(base_listing, github_url):
     return base_rows
 
 
-def annex_whatnot_format(df, locale_map, rarity_map, base_price_by_rarity):
+def annex_whatnot_format(df, locale_map, rarity_map, base_price_by_rarity, increment_titles=True):
     df["Langue"] = df["Id"].apply(
         lambda id_str: detect_locale(id_str, locale_map))
     df["Formatted ID"] = df["Id"].map(format_id)
     df["Titre"] = df["Name"] + " - " + \
         df["Formatted ID"] + " - " + df["Langue"]
     df = df.reset_index(drop=True)
-    df["Titre"] = (df.index + 1).astype(str) + " - " + df["Titre"]
+    
+    if increment_titles:
+        df["Titre"] = (df.index + 1).astype(str) + " - " + df["Titre"]
+    
     df["Rareté"] = df["Rarity"].map(rarity_map)
     df["Rareté"] = df["Rareté"].fillna(df["Rarity"].apply(
         lambda r: "ERROR" if r.strip() == "—" else r))
@@ -63,6 +66,7 @@ def annex_whatnot_format(df, locale_map, rarity_map, base_price_by_rarity):
     df["Prix"] = df["Rareté"].map(base_price_by_rarity)
 
     return df
+
 
 
 def annex_images(df, github_url, background_path):
@@ -106,10 +110,16 @@ def build_output_df(df):
         "Image URL 8": ""
     })
 
-
-def format_whatnot_csv(input_path, output_path, github_url, background_path, locale_map, rarity_map, base_price_by_rarity, base_listing):
+def format_whatnot_csv(
+    input_path, output_path, github_url, background_path,
+    locale_map, rarity_map, base_price_by_rarity, base_listing,
+    increment_titles=True
+):
     df = pd.read_csv(input_path, encoding="utf-16", sep=";")
-    df = annex_whatnot_format(df, locale_map, rarity_map, base_price_by_rarity)
+    
+    df = df[df["Quantity"] > 0]
+    
+    df = annex_whatnot_format(df, locale_map, rarity_map, base_price_by_rarity, increment_titles)
     df = annex_images(df, github_url, background_path)
     base_df = pd.DataFrame(load_base_listings(base_listing, github_url))
     output_df = build_output_df(df)

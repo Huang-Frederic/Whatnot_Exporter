@@ -7,16 +7,19 @@ BACKGROUND_PATH = "assets/Background.png"
 
 # TODO : PRICES SHOULD BE ROUNDED, GIVEAWAY ERROR
 
+INCREMENT = False
+
 BASE_PRICE_BY_RARITY = {
     "SAR": 5.0,
     "SR": 4.0,
     "AR": 3.0,
     "CHR": 3.0,
-    "RRR": 2.0,
+    "RRR": 1.0,
     "RR": 1.0,
     "Shiny": 1.0,
     "Other": 1.0,
-    "ERROR": 0.5
+    "ERROR": 0.5,
+    "SAR - (ou autre)": 4.0,
 }
 
 BASE_LISTINGS = [
@@ -90,7 +93,7 @@ BASE_LISTINGS = [
         "Quantity": 20,
         "Prix": 1,
         "Image URL 1": "1RR.png",
-        "include": True
+        "include": False
     },
     {
         "Titre": "Carte vu en Live - JP",
@@ -112,10 +115,11 @@ BASE_LISTINGS = [
 
 RARITY_MAP = {
     "Common": "Other",
+    "XY RR": "SAR - (ou autre)",
     "Uncommon": "Other",
     "Rare": "Other",
     "Ultra Rare Shiny": "SR",
-    "Ultra Rare": "CHR",
+    "Ultra Rare": "RRR",
     "Shiny Ultra Rare": "SR",
     "Secret Rare": "SR",
     "Rare Shiny": "Shiny",
@@ -151,6 +155,6 @@ if __name__ == "__main__":
     format_whatnot_csv(
         args.input_csv, output_path,
         GITHUB_BASE_URL, BACKGROUND_PATH,
-        LOCALE_MAP, RARITY_MAP, BASE_PRICE_BY_RARITY, BASE_LISTINGS
+        LOCALE_MAP, RARITY_MAP, BASE_PRICE_BY_RARITY, BASE_LISTINGS, INCREMENT
     )
     print(f"✅ CSV exporté : {output_path}")
