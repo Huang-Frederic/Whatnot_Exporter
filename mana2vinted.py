@@ -1,8 +1,8 @@
 import pandas as pd
 
 # === PARAMÈTRES GLOBAUX ===
-INPUT_CSV = "vinted_data/manabox.csv"
-OUTPUT_CSV = f"vinted_data/output_manabox.csv"
+INPUT_CSV = "vinted_data/Quintuplet.csv"
+OUTPUT_CSV = f"vinted_data/output_Quintuplet.csv"
 DEFAULTS = {
     "CONDITION_MAP": {
         "near_mint": "Très bon état (Near Mint), carte en excellent état (voir photos).",
@@ -17,18 +17,28 @@ DEFAULTS = {
         "✨ Carte MTG Magic The Gathering {name} #{CollectorNumber} - {SetName} ({SetCode})\n"
         "📘 Version {locale_full}\n"
         "✅ État : {condition}\n\n"
+        "🃏 Plein d'autres cartes sont disponibles sur mon profil mais aussi non listé ! N'hésitez pas à me demander pour la liste complète de ma collection !\n\n"
         "🛡️ Carte envoyée sous sleeve + toploader !\n"
         "🚀 Expédition rapide sous 1 à 2 jours ouvrés 📦\n"
         "🤝 Remise en main propre possible sur Paris / 92 / 95\n"
         "📸 Besoin de photos supplémentaires ? N'hésitez pas à me demander !\n\n"
-        "🃏 Plein d'autres cartes sont disponibles sur mon profil mais aussi non listé ! N'hésitez pas à me demander pour des communes ou non communes que je pourrais avoir.\n"
-        "📦 Possibilité de créer des lots personnalisés avec réduction sur les frais de port 🤑\n"
+        "📦 Possibilité de créer des lots personnalisés avec réduction sur les frais de port 🤑\n\n"
+        "🌟 Je recherche activement une Lightning, Army of One V.1 #320 en version Anglaise ou Française, Foil ou Non Foil, pour échange ou achat (préférence pour RMP en IDF) 🌟\n"
     ),
 }
 
-
 def parse_mana_csv(input_csv, output_csv, defaults):
     df = pd.read_csv(input_csv)
+
+    lang_order = {"fr": 1, "en": 0}
+
+    df["lang_order"] = df["Language"].map(lang_order).fillna(99)
+
+    df = df.sort_values(
+        by=["lang_order", "Purchase price"],
+        ascending=[True, False]
+    )
+
 
     def build_title(row):
         name = row["Name"]
@@ -61,3 +71,17 @@ def parse_mana_csv(input_csv, output_csv, defaults):
 
 if __name__ == "__main__":
     parse_mana_csv(INPUT_CSV, OUTPUT_CSV, DEFAULTS)
+
+# ✨ Carte MTG Magic The Gathering NAME #XX/53 (FR) - Final Fantasy Art Series (FIN-AS)
+# 📘 Version Française
+# ✅ État : Très bon état (Near Mint), carte en excellent état (voir photos).
+
+# 🛡️ Carte envoyée sous sleeve + toploader !
+# 🚀 Expédition rapide sous 1 à 2 jours ouvrés 📦
+# 🤝 Remise en main propre possible sur Paris / 92 / 95
+
+# 📸 Besoin de photos supplémentaires ? N'hésitez pas à me demander !
+# 🃏 Plein d'autres cartes sont disponibles sur mon profil mais aussi non listé ! N'hésitez pas à me demander pour des communes ou non communes que je pourrais avoir.
+# 📦 Possibilité de créer des lots personnalisés avec réduction sur les frais de port 🤑
+
+# 🌟 Je recherche activement une Lightning, Army of One V.1 #320 en version Anglaise ou Française, Foil ou Non Foil, pour échange ou achat (préférence pour RMP en IDF) 🌟
