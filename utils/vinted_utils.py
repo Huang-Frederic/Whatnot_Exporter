@@ -90,7 +90,7 @@ def generate_description(row, DEFAULTS):
 
     description = template.format(
         name=name,
-        rarity=rarity,
+        # rarity=rarity,
         series=series,
         set=set_name,
         locale_full=locale_full,

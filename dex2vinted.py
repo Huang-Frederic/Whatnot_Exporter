@@ -5,8 +5,8 @@ from utils.vinted_phase_3 import run_scraping
 
 # === PARAMÈTRES GLOBAUX ===
 PHASE = 1  # 1 = génération CSV / 2 = liaison images / 3 = scraping
-INPUT_CSV = "vinted_data/ewoo.csv"
-OUTPUT_CSV = f"vinted_data/output_ewoo.csv"
+INPUT_CSV = "vinted_data/japbig.csv"
+OUTPUT_CSV = f"vinted_data/output_japbig.csv"
 IMAGE_FOLDER = "vinted_images/vintedlot"
 DEFAULTS = {
     "CATEGORY": "Unit",  # "Unit" pour une carte seule, "Lot" pour plusieurs cartes
@@ -14,7 +14,7 @@ DEFAULTS = {
     "PACKAGE": "Small",
 
     "CONDITION": "Very Good",  # Voir CONDITION_MAP ci-dessous
-    "LOCALE": "CN",  # Langue de la carte (EN, FR, JP, CN…)
+    "LOCALE": "FR",  # Langue de la carte (EN, FR, JP, CN…)
 
     "CONDITION_MAP": {
         "Very Good": "Très bon état (Near Mint), carte en excellent état (voir photos).",
@@ -30,7 +30,8 @@ DEFAULTS = {
     },
 
     "DESC_TEMPLATE_UNIT": (
-        "✨ Carte Pokémon {name} - {rarity} de la série {series} ({set})\n"
+        # "✨ Carte Pokémon {name} - {rarity} de la série {series} ({set})\n"
+        "✨ Carte Pokémon {name} - {series} ({set})\n" 
         "📘 Version {locale_full}\n"
         "✅ État : {condition_full}\n\n"
         "🛡️ Carte envoyée sous sleeve + toploader !\n"

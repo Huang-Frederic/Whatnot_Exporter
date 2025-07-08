@@ -1,8 +1,8 @@
 import pandas as pd
 
 # === PARAMÈTRES GLOBAUX ===
-INPUT_CSV = "vinted_data/Quintuplet.csv"
-OUTPUT_CSV = f"vinted_data/output_Quintuplet.csv"
+INPUT_CSV = "vinted_data/ToList.csv"
+OUTPUT_CSV = f"vinted_data/output_ToList.csv"
 DEFAULTS = {
     "CONDITION_MAP": {
         "near_mint": "Très bon état (Near Mint), carte en excellent état (voir photos).",

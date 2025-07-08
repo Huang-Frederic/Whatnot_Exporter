@@ -108,7 +108,8 @@ def generate_title(row, DEFAULTS):
     if DEFAULTS["CATEGORY"] == "Lot":
         return f"Lot de Cartes Pokémon {name}"
     else:
-        return f"Carte Pokémon {name} - {row['Rarity']} - {set_name} ({formatted_id}) [{locale_code}]"
+        # return f"Carte Pokémon {name} - {row['Rarity']} - {set_name} ({formatted_id}) [{locale_code}]"
+        return f"Carte Pokémon {name} - {set_name} ({formatted_id}) [{locale_code}]"
 
 
 def parse_dex_csv(input_path, output_path, DEFAULTS):
